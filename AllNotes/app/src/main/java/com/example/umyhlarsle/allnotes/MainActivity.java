@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     int todoImage = R.drawable.newtodo;
     Gson gson;
     SharedPreferences pref;
-    static SavedNotes savedNotes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         gson = new Gson();
         pref = getSharedPreferences(SAVE_FILE, 0);
-        savedNotes=new SavedNotes();
 
+        MySingleton mySingleton = MySingleton.getInstance();
         ///Testar användning av ArrayList i ListView
         if(savedInstanceState == null) {
 
@@ -252,12 +252,12 @@ public class MainActivity extends AppCompatActivity {
     public void loadFromFile(){
 
         String tmpString = pref.getString(SAVE_KEY, null);
-
+        MySingleton mySingleton = MySingleton.getInstance();
         if (tmpString==null){
             ///Show instruction image?
             Log.i("TAG", "Nytt objekt skapas " + tmpString);
         }else{
-            savedNotes=gson.fromJson(tmpString,SavedNotes.class);
+            mySingleton=gson.fromJson(tmpString,MySingleton.class);
             ///Fylla MySingleton?
             Log.i("TAG", "LADDAR");
         }
@@ -265,7 +265,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void saveToFile(){
 
-        String jsonString = gson.toJson(savedNotes);
+        MySingleton mySingleton = MySingleton.getInstance();
+        String jsonString = gson.toJson(mySingleton);
         SharedPreferences.Editor editor =pref.edit();
         editor.putString(SAVE_KEY, jsonString);
         editor.commit();

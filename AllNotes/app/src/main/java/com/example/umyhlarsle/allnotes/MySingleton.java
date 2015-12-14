@@ -9,20 +9,20 @@ import java.util.ArrayList;
  */
 public class MySingleton {
 
-    private static MySingleton sMySingleton;
-    private ArrayList<Note> mNotes;
+    ArrayList<Note> myNoteList = new ArrayList<>();
 
-    public static MySingleton get(Context context){
-        if (sMySingleton==null){
-            sMySingleton = new MySingleton(context);
-        }
-        return sMySingleton;
+    //create an object of SingleObject
+    private static MySingleton instance = new MySingleton();
+
+    //make the constructor private so that this class cannot be
+    //instantiated
+    private MySingleton(){
+
     }
-    private MySingleton (Context context){
 
-        mNotes = new ArrayList<>();
-
-
+    //Get the only object available
+    public static MySingleton getInstance(){
+        return instance;
     }
 
 
