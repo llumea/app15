@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/list_layout_id"
+                android:background="@color/primarycolor"
+                android:descendantFocusability="blocksDescendants"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <ImageView
+
+        android:layout_margin="4dp"
+        android:id="@+id/note_icon"
+        android:src="@drawable/newnote"
+        android:padding="4dp"
+        android:layout_alignParentLeft="true"
+        android:background="@color/primarycolor"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+    <TextView
+
+        android:id="@+id/note_title"
+        android:textColor="@color/texticons"
+        android:text="Note Title"
+        android:textSize="22sp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/note_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+
+        android:id="@+id/note_date"
+        android:textColor="@color/secondarytextcolor"
+        android:text="12 December 2015 01:10:23"
+        android:layout_toRightOf="@id/note_icon"
+        android:layout_below="@id/note_title"
+        android:layout_marginBottom="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <ImageButton
+        android:layout_margin="4dp"
+        android:id="@+id/remove_button"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/trash"
+        android:background="@color/primarycolor"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+    <TextView
+
+        android:id="@+id/note_completed"
+        android:textColor="@color/accentcolor"
+        android:text="0/0"
+        android:textSize="18sp"
+        android:layout_marginTop="18dp"
+        android:layout_toLeftOf="@id/remove_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

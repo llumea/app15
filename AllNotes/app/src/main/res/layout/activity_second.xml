@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/my_actionbar"
+        android:paddingLeft="4dp"
+        android:layout_gravity="fill_horizontal"
+        android:layout_width="match_parent"
+        android:background="@color/primarycolor"
+        android:elevation="4dp"
+        android:layout_height="48dp">
+        <TextView
+
+            android:id="@+id/actionbar_title"
+            android:text="@string/textnote_title"
+            android:paddingTop="4dp"
+            android:textSize="30sp"
+            android:textColor="@color/texticons"
+            android:layout_centerInParent="true"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:id="@+id/send_mail_button"
+            android:src="@drawable/sendmail"
+            android:background="#0000"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/container_list_view"
+        android:layout_below="@id/my_actionbar"
+        android:layout_width="match_parent"
+        android:background="@color/dividercolor"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:alpha="0.5"
+        android:layout_marginTop="16dp"
+        android:layout_height="48dp">
+
+        <EditText
+            android:id="@+id/edit_title"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textSize="22sp"
+            android:singleLine="true"
+            android:inputType="textCapSentences"
+            android:background="@color/texticons"
+            android:hint="@string/enter_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="vertical"
+        android:id="@+id/container_fragments"
+        android:layout_below="@id/container_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>

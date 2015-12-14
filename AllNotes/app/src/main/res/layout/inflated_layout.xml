@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_margin="8dp"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+
+    <CheckBox
+        android:id="@+id/check_box"
+        android:buttonTint="@color/primarycolor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageButton
+        android:layout_alignParentRight="true"
+        android:id="@+id/remove_button"
+        android:src="@drawable/trash"
+        android:background="@color/dividercolor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/edit_item_text"
+        android:layout_toRightOf="@id/check_box"
+        android:layout_toLeftOf="@id/remove_button"
+        android:background="@color/texticons"
+        android:singleLine="true"
+        android:inputType="textCapSentences"
+        android:hint="ToDo"
+        android:padding="4dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+
+
+</RelativeLayout>
