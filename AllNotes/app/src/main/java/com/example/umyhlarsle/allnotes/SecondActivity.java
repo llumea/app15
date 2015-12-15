@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -28,15 +31,20 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         getSupportActionBar().hide();
+        MySingleton mySingleton = MySingleton.getInstance();
         actionBarTitle = (TextView)findViewById(R.id.actionbar_title);
         editTitle = (EditText)findViewById(R.id.edit_title);
         editTitle.setTypeface(null, Typeface.BOLD);
         MyTextWatcher myTextWatcher = new MyTextWatcher(this);
         editTitle.addTextChangedListener(myTextWatcher);
         sendButton = (ImageButton)findViewById(R.id.send_mail_button);
+
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(), "Sending mail...", Toast.LENGTH_SHORT).show();
                 ///If textNote - Send mail with title and content
                 ///If todoNote - Send mail with title, tasks and status
             }
@@ -49,16 +57,41 @@ public class SecondActivity extends AppCompatActivity {
         ///String message = intent.getStringExtra(MainActivity.SHOW_FRAGMENT);
 
         Log.i("TAG", "String sent in intent: " + message);
-        if (message.equals("textnote") || message.equals("oldtextnote")){
-            actionBarTitle.setText("Text Note");
-            showTextNoteFragment();
-        }
-        if (message.equals("todonote")|| message.equals("oldtodonote")){
-            Log.i("TAG", "Text equals todonote!");
-            actionBarTitle.setText("ToDo Note");
+        ///OBS list position blir fel vid resume...
+        if(savedInstanceState == null) {
+            if (message.equals("textnote")) {
+                TextNote textNote = new TextNote();
+                mySingleton.myNoteList.add(textNote);
+                mySingleton.listPosition = mySingleton.myNoteList.size() - 1;
+                Log.i("TAG", "OnCreate, new textnote" +"listPosition: " +mySingleton.listPosition);
+            }
+            if (message.equals("oldtextnote")){
+                mySingleton.listPosition = notePosition;
+            }
+            if (message.equals("todonote")){
+                ToDoNote toDoNote = new ToDoNote();
+                mySingleton.myNoteList.add(toDoNote);
+                mySingleton.listPosition = mySingleton.myNoteList.size() - 1;
 
-            showToDoNoteFragment();
+                ToDoTask tmpToDoTask = new ToDoTask(false, "I create a task");
+                Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+                ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+                tmpToDoNote.taskList.add(tmpToDoTask);
+                Log.i("TAG", "OnCreate, new TODO note" +"listPosition: " +mySingleton.listPosition);
+            }
+            if (message.equals("oldtodonote")){
+                mySingleton.listPosition = notePosition;
+            }
         }
+            if (message.equals("textnote") || message.equals("oldtextnote")) {
+                actionBarTitle.setText("Text Note");
+                showTextNoteFragment();
+            }
+            if (message.equals("todonote") || message.equals("oldtodonote")) {
+                actionBarTitle.setText("ToDo Note");
+                showToDoNoteFragment();
+            }
+
 
 
 
@@ -68,12 +101,30 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        MySingleton mySingleton = MySingleton.getInstance();
+        String currentTitle = editTitle.getText().toString();
+        ((TextNote)mySingleton.myNoteList.get(mySingleton.listPosition)).title= currentTitle;
+
+        ///Testar sparade värdet
+        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+        TextNote tmpTextNote = (TextNote) tmpNote;
+        String tmpTitle = tmpTextNote.title;
+        Log.i("TAG", "Ändrad title?" + tmpTitle + "listPosition: " + mySingleton.listPosition);
         ///saveToMySingleton();
     }
     @Override
     protected void onResume() {
         super.onResume();
+        MySingleton mySingleton = MySingleton.getInstance();
+        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+        TextNote tmpTextNote = (TextNote) tmpNote;
+        String tmpTitle = tmpTextNote.title;
+        editTitle.setText(tmpTitle);
+        Log.i("TAG", "Resume title?" + tmpTitle + "listPosition: " + mySingleton.listPosition);
         ///loadFromMySingleton();
+    }
+    public void onSaveInstanceState(Bundle outInstanceState) {
+        outInstanceState.putInt("value", 1); ///Ser till att värdena inte laddas igen
     }
 
     @Override

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     ImageButton createTextNoteButton;
     ImageButton createToDoNoteButton;
     TextView sortButton;
-    static ArrayList<Note> myNoteList = new ArrayList<>();
+
+
     public static final String SHOW_FRAGMENT = "show_fragment_key";
     public static final String SEND_POSITION = "send_position_key";
     public static final String SAVE_FILE = "filename_notes";
@@ -59,18 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
             ///Initial LOAD från disk här och sedan ladda från MySingleton medan appen lever???
 
-            TextNote textNote1 = new TextNote("Idea", "My fabulous idea", 125);
-            myNoteList.add(textNote1);
-            HashMap<String, Boolean> tmpMap = new HashMap<>();
-            tmpMap.put("My First Task", false);
-            ToDoNote todonote1 = new ToDoNote("My Grocery List", "", 145, tmpMap);
-            myNoteList.add(todonote1);
-            TextNote textNote2 = new TextNote("No idea yet", "My fabulous idea", 125);
-            myNoteList.add(textNote2);
-            HashMap<String, Boolean> tmpMap2 = new HashMap<>();
-            tmpMap2.put("Another First Task", false);
-            ToDoNote todonote2 = new ToDoNote("My X-mas list", "", 145, tmpMap2);
-            myNoteList.add(todonote2);
+            TextNote textNote1 = new TextNote("Idea", "My fabulous idea", 123);
+            mySingleton.myNoteList.add(textNote1);
+            ToDoTask tmpTask = new ToDoTask(false, "My first task");
+            ArrayList<ToDoTask> tmpList = new ArrayList<>();
+            tmpList.add(tmpTask);
+            ToDoNote todonote1 = new ToDoNote("My Grocery List", "", 123, tmpList);
+            mySingleton.myNoteList.add(todonote1);
+
         }
         createTextNoteButton = (ImageButton)findViewById(R.id.new_note_button);
         createTextNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -78,19 +74,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Om anteckningen skapas i SecondActivity räcker det att skicka "newtextnote" här
-                TextNote textNote = new TextNote("Title","Content",125);
-                myNoteList.add(textNote);
-                adapter.notifyDataSetChanged();///Inte så snyggt att det skrivs ut innan aktivitetsbytet. Lägg till i onPause i SecondActivity?
-
-                ///Testar
-                Note tmpNote = myNoteList.get(myNoteList.size()-1);
-                TextNote tmpTextNote = (TextNote) tmpNote;
-                int tmpposition = myNoteList.size()-1;
-                Log.i("TAG", "Kollar index på ny item i ArrayList: " +tmpposition+tmpTextNote.title+tmpTextNote.content);
-                ///
+                MySingleton mySingleton = MySingleton.getInstance();
                 Bundle bundle = new Bundle();
                 bundle.putString("SHOW_FRAGMENT", "textnote");
-                bundle.putInt("SEND_POSITION", myNoteList.size()-1);
+                bundle.putInt("SEND_POSITION", mySingleton.myNoteList.size()-1);
                 Intent intent = new Intent(MainActivity.this,SecondActivity.class);
                 intent.putExtras(bundle);
                /// intent.putExtra(SHOW_FRAGMENT,"textnote");///Så här hade jag kunna skicka utan bundle till SecondActivity
@@ -118,27 +105,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        adapter = new MyAdapter(this,R.layout.list_layout,R.id.list_layout_id,myNoteList);
+        adapter = new MyAdapter(this,R.layout.list_layout,R.id.list_layout_id,mySingleton.myNoteList);
         listView = (ListView)findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ///showFragment();
+                MySingleton mySingleton = MySingleton.getInstance();
+                ///Obs båda är instance of textnote. Börjar därför med det underordnade objektet
+                if (mySingleton.myNoteList.get(position) instanceof ToDoNote) {
 
-                if (myNoteList.get(position) instanceof TextNote) { Bundle bundle = new Bundle();
-                bundle.putString("SHOW_FRAGMENT", "oldtextnote");
-                bundle.putInt("SEND_POSITION", position);
-                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
-                intent.putExtras(bundle);
-                /// intent.putExtra(SHOW_FRAGMENT,"textnote");///Så här hade jag kunna skicka utan bundle till SecondActivity
-                startActivity(intent);
-
-                Log.i("TAG", "List item clicked: " +myNoteList.get(position));
-                Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_SHORT).show();
-
-            }
-                if (myNoteList.get(position) instanceof ToDoNote) {
                     Bundle bundle = new Bundle();
                     bundle.putString("SHOW_FRAGMENT", "oldtodonote");
                     bundle.putInt("SEND_POSITION", position);
@@ -147,10 +124,25 @@ public class MainActivity extends AppCompatActivity {
                     /// intent.putExtra(SHOW_FRAGMENT,"textnote");///Så här hade jag kunna skicka utan bundle till SecondActivity
                     startActivity(intent);
 
-                    Log.i("TAG", "List item clicked: " +myNoteList.get(position));
-                    Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_SHORT).show();
+                    Log.i("TAG", "List item clicked TODO: " +mySingleton.myNoteList.get(position));
+                    Toast.makeText(getApplicationContext(), "OLD TO DO ITEM CLICKED", Toast.LENGTH_SHORT).show();
 
                 }
+                else if (mySingleton.myNoteList.get(position) instanceof TextNote) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("SHOW_FRAGMENT", "oldtextnote");
+                bundle.putInt("SEND_POSITION", position);
+                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+                intent.putExtras(bundle);
+                /// intent.putExtra(SHOW_FRAGMENT,"textnote");///Så här hade jag kunna skicka utan bundle till SecondActivity
+                startActivity(intent);
+
+                Log.i("TAG", "List item clicked TEXT: " +mySingleton.myNoteList.get(position));
+                Toast.makeText(getApplicationContext(), "OLD TEXT NOTE CLICKED", Toast.LENGTH_SHORT).show();
+
+            }
+
             }
         });
     }
@@ -163,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        adapter.notifyDataSetChanged();
         ///loadFromFile();
     }
 
@@ -203,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             //convertView i det här fallet verkar vara rootvyn i list_layout.xml
             //parent verkar vara ListView
-            //position är positionen i myList
+            //position är positionen i myNoteList
             ///Log.i("TAG", "Antal objekt i getView: " + sparadeObjekt.minaSparadeObjekt.size());
             myInflater = getLayoutInflater();
             View v = myInflater.inflate(R.layout.list_layout, listView, false); ///inflatedlayout är namnet på xml-filen
@@ -212,22 +205,28 @@ public class MainActivity extends AppCompatActivity {
             TextView date = (TextView)v.findViewById(R.id.note_date);
             TextView completed = (TextView)v.findViewById(R.id.note_completed);
             ImageView noteIcon = (ImageView)v.findViewById(R.id.note_icon);
-
-            if (myNoteList.get(position) instanceof TextNote) {
-                Note tmpNote = myNoteList.get(position);
+            MySingleton mySingleton = MySingleton.getInstance();
+            if (mySingleton.myNoteList.get(position) instanceof TextNote) {
+                Note tmpNote = mySingleton.myNoteList.get(position);
                 TextNote tmpTextNote = (TextNote) tmpNote;
                 title.setText(tmpTextNote.title);
+                SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy HH:mm:ss");
+                String formatedDate = sdf.format(tmpTextNote.date);
+                date.setText(formatedDate);
                 noteIcon.setImageResource(noteImage);
                 completed.setText("");
             }
-            if (myNoteList.get(position) instanceof ToDoNote) {
-                Note tmpNote = myNoteList.get(position);
+            if (mySingleton.myNoteList.get(position) instanceof ToDoNote) {
+                Note tmpNote = mySingleton.myNoteList.get(position);
                 ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
                 title.setText(tmpToDoNote.title);
+                SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy HH:mm:ss");
+                String formatedDate = sdf.format(tmpToDoNote.date);
+                date.setText(formatedDate);
                 noteIcon.setImageResource(todoImage);
                 completed.setText("0/17");
             }
-            removeButton.setTag(myNoteList.get(position));
+            removeButton.setTag(mySingleton.myNoteList.get(position));
            /// editText.setText(sparadeObjekt.minaSparadeObjekt.get(position).minString);
 
            /// editText.setTag(sparadeObjekt.minaSparadeObjekt.get(position));
@@ -237,9 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
+                    MySingleton mySingleton = MySingleton.getInstance();
                     ImageButton removeButton = (ImageButton)v.findViewById(R.id.remove_button);
                     ///sparadeObjekt.minaSparadeObjekt.remove(button.getTag());
-                    myNoteList.remove(removeButton.getTag());
+                    mySingleton.myNoteList.remove(removeButton.getTag());
                     adapter.notifyDataSetChanged();
 
                 }
@@ -272,4 +272,5 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
     }
+
 }

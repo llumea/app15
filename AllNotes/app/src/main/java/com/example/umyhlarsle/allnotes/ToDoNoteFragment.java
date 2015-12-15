@@ -1,6 +1,8 @@
 package com.example.umyhlarsle.allnotes;
 
 
+
+
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,6 +13,9 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -23,6 +28,7 @@ public class ToDoNoteFragment extends Fragment {
     LinearLayout linLayout;
     CheckBox checkBox;
     int checkBoxId =0;
+
 
 
     public ToDoNoteFragment() {
@@ -40,11 +46,22 @@ public class ToDoNoteFragment extends Fragment {
         linLayout = (LinearLayout)scrollView.findViewById(R.id.custom_inflated_list_layout);
 
 
+
     ///for-loop för varje item i todonote
-        for (int i =0;i<10;i++) {
+        MySingleton mySingleton = MySingleton.getInstance();
+        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+        ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+
+        for (int i =0;i<tmpToDoNote.taskList.size();i++) {
 
             View inflatedView = inflater.inflate(R.layout.inflated_layout, linLayout, false);
             checkBox = (CheckBox)inflatedView.findViewById(R.id.check_box);
+            checkBox.setTag(tmpToDoNote.taskList.get(i));
+        if (checkBox.getTag()==(tmpToDoNote.taskList.get(i))) {
+            if (tmpToDoNote.taskList.get(i).taskDone == false) {
+                checkBox.setChecked(false);
+            } else {checkBox.setChecked(true);}
+        }
 
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -67,6 +84,31 @@ public class ToDoNoteFragment extends Fragment {
 
 
         return view;
+    }
+    public void onPause() {
+
+        super.onPause();
+        ///Sparar innehållet, titeln sparas i SecondActivity
+        MySingleton mySingleton = MySingleton.getInstance();
+        ///String currentContent = editContent.getText().toString();
+        ///((TextNote)mySingleton.myNoteList.get(mySingleton.listPosition)).content= currentContent;
+
+        ///Sparar datum här i stället för SecondActivity, datum för todonote kanske ändras till deadline
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        long tmpTime = date.getTime();
+        ((ToDoNote)mySingleton.myNoteList.get(mySingleton.listPosition)).date= tmpTime;
+
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ///String tmpTask = tmpToDoNote...
+
+
+
     }
 
 

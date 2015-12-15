@@ -4,8 +4,10 @@
     <color name="primarycolor">#FF5722</color>
     <color name="primarydarkcolor">#E64A19</color>
     <color name="lightprimarycolor">#FFCCBC</color>
-    <color name="accentcolor">#FF9800</color>
+    <color name="accentcolor">#FFC107</color>
+    <color name="oldaccentcolor">#FF9800</color>
     <color name="primarytextcolor">#212121</color>
     <color name="secondarytextcolor">#727272</color>
     <color name="texticons">#FFFFFF</color>
+    #009688
 </resources>

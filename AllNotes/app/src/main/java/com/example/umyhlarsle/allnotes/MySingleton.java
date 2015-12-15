@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class MySingleton {
 
+    int listPosition;
     ArrayList<Note> myNoteList = new ArrayList<>();
 
     //create an object of SingleObject
@@ -24,6 +25,8 @@ public class MySingleton {
     public static MySingleton getInstance(){
         return instance;
     }
+
+
 
 
 }

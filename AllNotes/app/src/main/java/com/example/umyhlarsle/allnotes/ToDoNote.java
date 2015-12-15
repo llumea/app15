@@ -1,5 +1,6 @@
 package com.example.umyhlarsle.allnotes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -8,13 +9,15 @@ import java.util.HashMap;
 public class ToDoNote extends TextNote {
 
     ///String content kan vara första punkten i listan?
-    HashMap<String, Boolean> taskMap = new HashMap<>();
+    ArrayList<ToDoTask> taskList = new ArrayList<>();
 
-    public ToDoNote(String title, String content, long date, HashMap<String,Boolean> taskMap){
+    public ToDoNote(){}
+
+    public ToDoNote(String title, String content, long date, ArrayList<ToDoTask> taskList){
         super.title = title;
         super.content = content;
         super.date = date;
-        this.taskMap = taskMap;
+        this.taskList = taskList;
     }
 
 }
