@@ -34,8 +34,8 @@ public class MyTextWatcher implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
 
-        if (s.length()>30){
-            CharSequence tmp =s.subSequence(0,30);
+        if (s.length()>25){
+            CharSequence tmp =s.subSequence(0,25);
             context.editTitle.setText(tmp);
             context.editTitle.setSelection(tmp.length());
             Toast.makeText(context, "The title cannot exceed 30 characters",

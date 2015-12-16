@@ -16,8 +16,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -73,10 +71,15 @@ public class SecondActivity extends AppCompatActivity {
                 mySingleton.myNoteList.add(toDoNote);
                 mySingleton.listPosition = mySingleton.myNoteList.size() - 1;
 
-                ToDoTask tmpToDoTask = new ToDoTask(false, "I create a task");
+                ToDoTask tmpToDoTask = new ToDoTask(true, "I create a task");
+                ToDoTask tmpToDoTask2 = new ToDoTask(false, "Second task");
+                ToDoTask tmpToDoTask3 = new ToDoTask(true, "Third task");
                 Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
                 ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
                 tmpToDoNote.taskList.add(tmpToDoTask);
+                tmpToDoNote.taskList.add(tmpToDoTask2);
+                tmpToDoNote.taskList.add(tmpToDoTask3);
+                tmpToDoNote.totalTasks=3;
                 Log.i("TAG", "OnCreate, new TODO note" +"listPosition: " +mySingleton.listPosition);
             }
             if (message.equals("oldtodonote")){
@@ -91,10 +94,6 @@ public class SecondActivity extends AppCompatActivity {
                 actionBarTitle.setText("ToDo Note");
                 showToDoNoteFragment();
             }
-
-
-
-
 
 
     }
@@ -149,41 +148,26 @@ public class SecondActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void showTextNoteFragment(){
+
         FragmentManager fm = getFragmentManager();
-
         FragmentTransaction transaction = fm.beginTransaction();
-
         Fragment textNoteFragment = new TextNoteFragment(); //typen bör vara Fragment
-
         transaction.replace(R.id.container_fragments, textNoteFragment, "tag"); //ANVÄND REPLACE ISTÄLLET FÖR ADD lägger till fragmentet till denna ViewGroup
-
         transaction.addToBackStack(null); //lägger till förändringen till backstack
-
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN); //frivillig animation
-
         transaction.commit(); //slutför förändringen, skall vara sist
 
     }
     public void showToDoNoteFragment(){
+
         FragmentManager fm = getFragmentManager();
-
         FragmentTransaction transaction = fm.beginTransaction();
-
         Fragment toDoNoteFragment = new ToDoNoteFragment(); //typen bör vara Fragment
-
         transaction.replace(R.id.container_fragments, toDoNoteFragment, "tag"); //ANVÄND REPLACE ISTÄLLET FÖR ADD lägger till fragmentet till denna ViewGroup
-
         transaction.addToBackStack(null); //lägger till förändringen till backstack
-
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN); //frivillig animation
-
         transaction.commit(); //slutför förändringen, skall vara sist
 
     }
-    public void saveToMySingleton(){
-        ///Formatera datum och längd på rubrik etc. här?
-    }
-    public void loadFromMySingleton(){
-        ///Ladda och inflata rubrik, innehåll, uppgift, klar uppgift etc.
-    }
+
 }

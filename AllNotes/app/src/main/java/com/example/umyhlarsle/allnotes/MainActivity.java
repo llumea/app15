@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             ToDoTask tmpTask = new ToDoTask(false, "My first task");
             ArrayList<ToDoTask> tmpList = new ArrayList<>();
             tmpList.add(tmpTask);
-            ToDoNote todonote1 = new ToDoNote("My Grocery List", "", 123, tmpList);
+            ToDoNote todonote1 = new ToDoNote("My Grocery List", "", 123, tmpList, 0, 0);
             mySingleton.myNoteList.add(todonote1);
 
         }
@@ -150,13 +150,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ///saveToFile();
+        ///save();
     }
     @Override
     protected void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
-        ///loadFromFile();
+        ///load();
     }
 
     @Override
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loadFromFile(){
+    public void load(){
 
         String tmpString = pref.getString(SAVE_KEY, null);
         MySingleton mySingleton = MySingleton.getInstance();
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public void saveToFile(){
+    public void save(){
 
         MySingleton mySingleton = MySingleton.getInstance();
         String jsonString = gson.toJson(mySingleton);

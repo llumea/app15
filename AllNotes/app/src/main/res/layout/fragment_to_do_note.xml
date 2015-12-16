@@ -36,6 +36,7 @@
 
     <ScrollView
         android:id="@+id/scroll_view"
+        android:layout_marginBottom="40dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -54,7 +55,10 @@
     <ImageButton
 
         android:background="?android:selectableItemBackground"
+        android:id="@+id/add_task_button"
         android:src="@drawable/yellowplus"
+        android:alpha="0.7"
+        
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
