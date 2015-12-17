@@ -36,7 +36,9 @@ public class ToDoNoteFragment extends Fragment {
     ImageButton removeTaskButton;
     TextView completedText;
     EditText editTaskText;
+    LayoutInflater layoutInflater;
     int completedTaskCount;
+
 
 
 
@@ -61,20 +63,7 @@ public class ToDoNoteFragment extends Fragment {
 
         completedText=(TextView)relativeLayout1.findViewById(R.id.completed_text);
         addTaskButton = (ImageButton)view.findViewById(R.id.add_task_button);
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ///Lägger till task när man trycker på knappen
-                MySingleton mySingleton = MySingleton.getInstance();
 
-                ToDoTask tmpToDoTask = new ToDoTask(false, "");
-                Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-                ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-                tmpToDoNote.taskList.add(tmpToDoTask);
-                tmpToDoNote.totalTasks++;
-                ((SecondActivity)getActivity()).showToDoNoteFragment();
-            }
-        });
 
 
         ///Visar antal slutförda uppgifter/totalt antal uppgifter
@@ -83,17 +72,23 @@ public class ToDoNoteFragment extends Fragment {
         ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
 
 
-    ///Start inflating checkbox, edittext and removebutton
+    ///START INFLATION
 
         for (int i =0;i<tmpToDoNote.taskList.size();i++) {
 
             View inflatedView = inflater.inflate(R.layout.inflated_layout, linLayout, false);
+            final RelativeLayout inflatedRelativeLayout = (RelativeLayout)inflatedView.findViewById(R.id.inflated_relative_layout);
             editTaskText = (EditText)inflatedView.findViewById(R.id.edit_task_text);
-            editTaskText.setTag(tmpToDoNote.taskList.get(i));
+            ///Egen Tag på EditText
+            Tag myTag = new Tag();
+            tmpToDoNote.taskList.get(i).editTextTag =myTag;
+            editTaskText.setTag(myTag);
+            ///Log.i("TAG", "TAG för editTaskText i TAGLIST: " + tmpToDoNote.taskList.get(i).editTextTagList.get(i));
             Log.i("TAG", "TAG för editTaskText: " + editTaskText.getTag());
             removeTaskButton = (ImageButton)inflatedView.findViewById(R.id.remove_task_button);
             if (tmpToDoNote.taskList.size()==1){removeTaskButton.setAlpha(0.5f);
-            } else{removeTaskButton.setAlpha(1f);}
+            } else {
+                removeTaskButton.setAlpha(1f);}
             removeTaskButton.setTag(tmpToDoNote.taskList.get(i));
             removeTaskButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,8 +116,9 @@ public class ToDoNoteFragment extends Fragment {
                     }
                 }
             });
-            checkBox = (CheckBox)inflatedView.findViewById(R.id.check_box);
+            checkBox = (CheckBox) inflatedView.findViewById(R.id.check_box);
             checkBox.setTag(tmpToDoNote.taskList.get(i));
+
 
             ///Fyller i checkboxvärden från MySingleton
 
@@ -130,7 +126,6 @@ public class ToDoNoteFragment extends Fragment {
                 if (checkBox.getTag() == tmpToDoNote.taskList.get(j)) {
                     editTaskText.setText(tmpToDoNote.taskList.get(i).taskString);
                     if (tmpToDoNote.taskList.get(j).taskDone == false) {
-
                         checkBox.setChecked(false);
                     } else if(tmpToDoNote.taskList.get(j).taskDone == true) {
                         checkBox.setChecked(true);
@@ -143,7 +138,7 @@ public class ToDoNoteFragment extends Fragment {
             checkBox.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                       ///Kollar bara den sista förekomsten, setTag eller id på checkbox.
+
                   MySingleton mySingleton = MySingleton.getInstance();
                   Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
                   ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
@@ -169,12 +164,34 @@ public class ToDoNoteFragment extends Fragment {
 
             );
 
+            addTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    MySingleton mySingleton = MySingleton.getInstance();
+                    ToDoTask tmpToDoTask = new ToDoTask(false, "");
+                    Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+                    ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+                    tmpToDoNote.taskList.add(tmpToDoTask);
+
+                    tmpToDoNote.totalTasks++;
+                    ///editTaskText inflatas inte före onPause och hittas därför inte???Taggen finns men inte EditText-widgeten
+                    editTaskText = (EditText)inflatedRelativeLayout.findViewById(R.id.edit_task_text);
+                    Tag myTag = new Tag();
+                    tmpToDoNote.taskList.get(tmpToDoNote.taskList.size()-1).editTextTag =myTag;
+                    editTaskText.setTag(myTag);
+                    ///Egen Tag på EditText
+
+                    ((SecondActivity)getActivity()).showToDoNoteFragment();
+                }
+            });
+
 
                 linLayout.addView(inflatedView);
             }
         completedText.setText("Completed: "+tmpToDoNote.completedCount+"/"+tmpToDoNote.totalTasks);
 
-        ///End inflation
+        ///END INFLATION
 
 
             return view;
@@ -187,15 +204,12 @@ public class ToDoNoteFragment extends Fragment {
         Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
         ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
 
-
         for (int i = 0; i < tmpToDoNote.taskList.size(); i++) {
-
-
-
+            editTaskText = (EditText) linLayout.findViewWithTag(tmpToDoNote.taskList.get(i).editTextTag);
+            tmpToDoNote.taskList.get(i).taskString = editTaskText.getText().toString();
         }
-        showTaskList();
-        ///String currentContent = editContent.getText().toString();
-        ///((TextNote)mySingleton.myNoteList.get(mySingleton.listPosition)).content= currentContent;
+
+        showTaskList(); ///TESTMETOD
 
         ///Sparar datum här i stället för SecondActivity, datum för todonote kanske ändras till deadline
         Calendar calendar = Calendar.getInstance();
