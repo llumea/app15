@@ -27,36 +27,32 @@
         android:layout_height="wrap_content"/>
 
     </RelativeLayout>
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/relativelayout2"
         android:background="@color/dividercolor"
         android:layout_below="@id/relativelayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_marginBottom="40dp"
-        android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/custom_inflated_list_layout"
-            android:background="@color/dividercolor"
+
+        <ListView
+            android:id="@+id/todo_list_view"
+            android:descendantFocusability="afterDescendants"
+            android:transcriptMode="alwaysScroll"
+            android:divider="@color/texticons"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </LinearLayout>
+
+        </ListView>
 
 
-    </ScrollView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <ImageButton
 
         android:background="?android:selectableItemBackground"
         android:id="@+id/add_task_button"
-        android:src="@drawable/yellowplus"
+        android:src="@drawable/yellowplus_40"
         android:alpha="0.7"
 
         android:layout_alignParentBottom="true"

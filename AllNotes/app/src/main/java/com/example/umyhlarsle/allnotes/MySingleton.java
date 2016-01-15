@@ -1,7 +1,6 @@
 package com.example.umyhlarsle.allnotes;
 
 import android.content.Context;
-
 import java.util.ArrayList;
 
 /**
@@ -10,7 +9,12 @@ import java.util.ArrayList;
 public class MySingleton {
 
     int listPosition;
+    int sortOrder;
+
+    final static int SORT_BY_DATE=0;
+    final static int SORT_BY_TYPE=1;
     ArrayList<Note> myNoteList = new ArrayList<>();
+
 
     //create an object of SingleObject
     private static MySingleton instance = new MySingleton();
@@ -22,11 +26,11 @@ public class MySingleton {
     }
 
     //Get the only object available
-    public static MySingleton getInstance(){
+    //Tanken var att ladda/spara skulle ske här. Därför finns Context context kvar här. Vänligen ignorera det.
+    public static MySingleton getInstance(Context context){
+
         return instance;
     }
-
-
 
 
 }

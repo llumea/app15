@@ -3,20 +3,22 @@ package com.example.umyhlarsle.allnotes;
 
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,26 +27,14 @@ import java.util.Date;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToDoNoteFragment extends Fragment {
+public class ToDoNoteFragment extends Fragment implements TextWatcher {
 
-    RelativeLayout relativeLayout;
     RelativeLayout relativeLayout1;
-    ScrollView scrollView;
-    LinearLayout linLayout;
-    CheckBox checkBox;
     ImageButton addTaskButton;
-    ImageButton removeTaskButton;
     TextView completedText;
-    EditText editTaskText;
-    LayoutInflater layoutInflater;
-    int completedTaskCount;
-
-
-
-
-    int checkBoxId =0;
-
-
+    ListView todoListView;
+    MyToDoAdapter myToDoAdapter;
+    RelativeLayout inflatedRelativeLayout;
 
     public ToDoNoteFragment() {
         // Required empty public constructor
@@ -56,142 +46,63 @@ public class ToDoNoteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_to_do_note, container, false);
-        relativeLayout = (RelativeLayout)view.findViewById(R.id.relativelayout2);
-        relativeLayout1 = (RelativeLayout)view.findViewById(R.id.relativelayout1);
-        scrollView = (ScrollView)relativeLayout.findViewById(R.id.scroll_view);
-        linLayout = (LinearLayout)scrollView.findViewById(R.id.custom_inflated_list_layout);
 
+        relativeLayout1 = (RelativeLayout)view.findViewById(R.id.relativelayout1);
+        inflatedRelativeLayout = (RelativeLayout)view.findViewById(R.id.inflated_relative_layout);
         completedText=(TextView)relativeLayout1.findViewById(R.id.completed_text);
         addTaskButton = (ImageButton)view.findViewById(R.id.add_task_button);
-
-
-
-        ///Visar antal slutförda uppgifter/totalt antal uppgifter
-        MySingleton mySingleton = MySingleton.getInstance();
+        MySingleton mySingleton = MySingleton.getInstance(getActivity());
         Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
         ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+        myToDoAdapter = new MyToDoAdapter(getActivity(),R.layout.inflated_layout,R.id.inflated_relative_layout,tmpToDoNote.taskList);
+        todoListView = (ListView)view.findViewById(R.id.todo_list_view);
+
+        todoListView.setAdapter(myToDoAdapter);
+        todoListView.setItemsCanFocus(true);
+        todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-    ///START INFLATION
-
-        for (int i =0;i<tmpToDoNote.taskList.size();i++) {
-
-            View inflatedView = inflater.inflate(R.layout.inflated_layout, linLayout, false);
-            final RelativeLayout inflatedRelativeLayout = (RelativeLayout)inflatedView.findViewById(R.id.inflated_relative_layout);
-            editTaskText = (EditText)inflatedView.findViewById(R.id.edit_task_text);
-            ///Egen Tag på EditText
-            Tag myTag = new Tag();
-            tmpToDoNote.taskList.get(i).editTextTag =myTag;
-            editTaskText.setTag(myTag);
-            ///Log.i("TAG", "TAG för editTaskText i TAGLIST: " + tmpToDoNote.taskList.get(i).editTextTagList.get(i));
-            Log.i("TAG", "TAG för editTaskText: " + editTaskText.getTag());
-            removeTaskButton = (ImageButton)inflatedView.findViewById(R.id.remove_task_button);
-            if (tmpToDoNote.taskList.size()==1){removeTaskButton.setAlpha(0.5f);
-            } else {
-                removeTaskButton.setAlpha(1f);}
-            removeTaskButton.setTag(tmpToDoNote.taskList.get(i));
-            removeTaskButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ///REMOVE task och visa count/total tasks
-                    MySingleton mySingleton = MySingleton.getInstance();
-                    Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-                    ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-
-                    for (int i=0;i<tmpToDoNote.taskList.size();i++) {
-                        removeTaskButton = (ImageButton) v.findViewById(R.id.remove_task_button);
-                        if (tmpToDoNote.taskList.size() > 1) {
-                            if (removeTaskButton == v.findViewWithTag(tmpToDoNote.taskList.get(i))) {
-                                tmpToDoNote.taskList.remove(tmpToDoNote.taskList.get(i));
-                                ///Log.i("TAG", "TAR BORT: " + tmpToDoNote.taskList.get(i) + "index" + i);
-                                tmpToDoNote.totalTasks = tmpToDoNote.taskList.size();
-
-                                ((SecondActivity) getActivity()).showToDoNoteFragment();
-                                Log.i("TAG", "Remove from list!!!");
-                                showTaskList();
-                                break;
-                            }
-
-                        }
-                    }
-                }
-            });
-            checkBox = (CheckBox) inflatedView.findViewById(R.id.check_box);
-            checkBox.setTag(tmpToDoNote.taskList.get(i));
+                ///Används inte för tillfället
 
 
-            ///Fyller i checkboxvärden från MySingleton
 
-            for (int j = 0; j < tmpToDoNote.taskList.size(); j++) {
-                if (checkBox.getTag() == tmpToDoNote.taskList.get(j)) {
-                    editTaskText.setText(tmpToDoNote.taskList.get(i).taskString);
-                    if (tmpToDoNote.taskList.get(j).taskDone == false) {
-                        checkBox.setChecked(false);
-                    } else if(tmpToDoNote.taskList.get(j).taskDone == true) {
-                        checkBox.setChecked(true);
-                        completedTaskCount++;
-                    }
-                }
+
             }
-            tmpToDoNote.completedCount=completedTaskCount;
-
-            checkBox.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-
-                  MySingleton mySingleton = MySingleton.getInstance();
-                  Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-                  ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-                  for (int i = 0; i < tmpToDoNote.taskList.size(); i++) {
-                      checkBox = (CheckBox) v.findViewById(R.id.check_box);
-                      if (checkBox == v.findViewWithTag(tmpToDoNote.taskList.get(i))) {
-                          if (tmpToDoNote.taskList.get(i).taskDone == true) {
-                              tmpToDoNote.taskList.get(i).taskDone = false;
-                              Log.i("TAG", "UNChecked" + tmpToDoNote.taskList.get(i).taskDone);
-                              ((SecondActivity) getActivity()).showToDoNoteFragment();
-                          } else if (tmpToDoNote.taskList.get(i).taskDone == false) {
-                              tmpToDoNote.taskList.get(i).taskDone = true;
-                              Log.i("TAG", "Checked" + tmpToDoNote.taskList.get(i).taskDone);
-                              ((SecondActivity) getActivity()).showToDoNoteFragment();
-                          }
-
-
-                      }
-                  }
-
-              }}
-
-
-            );
-
-            addTaskButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    MySingleton mySingleton = MySingleton.getInstance();
-                    ToDoTask tmpToDoTask = new ToDoTask(false, "");
-                    Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-                    ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-                    tmpToDoNote.taskList.add(tmpToDoTask);
-
-                    tmpToDoNote.totalTasks++;
-                    ///editTaskText inflatas inte före onPause och hittas därför inte???Taggen finns men inte EditText-widgeten
-                    editTaskText = (EditText)inflatedRelativeLayout.findViewById(R.id.edit_task_text);
-                    Tag myTag = new Tag();
-                    tmpToDoNote.taskList.get(tmpToDoNote.taskList.size()-1).editTextTag =myTag;
-                    editTaskText.setTag(myTag);
-                    ///Egen Tag på EditText
-
-                    ((SecondActivity)getActivity()).showToDoNoteFragment();
-                }
-            });
-
-
-                linLayout.addView(inflatedView);
+        });
+        int count=0;
+        for (int i=0;i<tmpToDoNote.taskList.size();i++){
+            if (tmpToDoNote.taskList.get(i).taskDone==true){
+                count++;
             }
+
+        }
+        tmpToDoNote.completedCount=count;
+        tmpToDoNote.totalTasks=tmpToDoNote.taskList.size();
+
+        ///Visar antal slutförda uppgifter/totalt antal uppgifter
         completedText.setText("Completed: "+tmpToDoNote.completedCount+"/"+tmpToDoNote.totalTasks);
 
-        ///END INFLATION
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MySingleton mySingleton = MySingleton.getInstance(getActivity());
+                Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+                ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+                ToDoTask tmpTask = new ToDoTask();
+                tmpToDoNote.taskList.add(tmpTask);
+                tmpToDoNote.totalTasks++;
+
+                myToDoAdapter.notifyDataSetChanged();
+                ///todoListView.requestFocus(todoListView.getAdapter().getCount()-1);
+
+
+
+            }
+        });
+
+
 
 
             return view;
@@ -199,46 +110,171 @@ public class ToDoNoteFragment extends Fragment {
     public void onPause() {
 
         super.onPause();
-        ///Sparar innehållet, titeln sparas i SecondActivity
-        MySingleton mySingleton = MySingleton.getInstance();
-        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-        ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-
-        for (int i = 0; i < tmpToDoNote.taskList.size(); i++) {
-            editTaskText = (EditText) linLayout.findViewWithTag(tmpToDoNote.taskList.get(i).editTextTag);
-            tmpToDoNote.taskList.get(i).taskString = editTaskText.getText().toString();
-        }
-
-        showTaskList(); ///TESTMETOD
 
         ///Sparar datum här i stället för SecondActivity, datum för todonote kanske ändras till deadline
+        MySingleton mySingleton = MySingleton.getInstance(getActivity());
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         long tmpTime = date.getTime();
         ((ToDoNote)mySingleton.myNoteList.get(mySingleton.listPosition)).date= tmpTime;
-
 
     }
     @Override
     public void onResume() {
         super.onResume();
 
-        ///String tmpTask = tmpToDoNote...
-
-
 
     }
-    //Testar listan
-    public void showTaskList(){
 
-        MySingleton mySingleton = MySingleton.getInstance();
+
+    public class MyToDoAdapter extends ArrayAdapter<ToDoTask> {
+        LayoutInflater myToDoInflater;
+
+        public MyToDoAdapter(Context context, int resource, int textViewResourceId, ArrayList<ToDoTask> objects) {
+            super(context, resource, textViewResourceId, objects);
+        }
+
+        //Denna metod kommer köras när ett element i listan skapas
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+
+            MySingleton mySingleton = MySingleton.getInstance(getContext());
+            Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+            ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+            myToDoInflater = getActivity().getLayoutInflater();
+            View v;
+            if (convertView != null) {
+                v = convertView;
+
+
+
+            } else {
+                v = myToDoInflater.inflate(R.layout.inflated_layout, todoListView, false); ///inflatedlayout är namnet på xml-filen
+
+
+            }
+
+            ImageButton removeTaskButton = (ImageButton)v.findViewById(R.id.remove_task_button);
+            CheckBox checkBox = (CheckBox)v.findViewById(R.id.check_box);
+            EditText editTaskText = (EditText)v.findViewById(R.id.edit_task_text);
+
+            editTaskText.addTextChangedListener(ToDoNoteFragment.this); ///WATCHER
+            editTaskText.setText(tmpToDoNote.taskList.get(position).taskString);
+            editTaskText.setTag(tmpToDoNote.taskList.get(position));
+
+
+            if (tmpToDoNote.taskList.get(position).taskDone==true){
+                checkBox.setChecked(true);
+            }
+            if (tmpToDoNote.taskList.get(position).taskDone==false){
+                checkBox.setChecked(false);
+            }
+            int count=0;
+            for (int i=0;i<tmpToDoNote.taskList.size(); i++){
+
+                if (tmpToDoNote.taskList.get(i).taskDone==true){
+                    count++;
+                    ///checkBox.setChecked(true);
+                }
+                if (tmpToDoNote.taskList.get(i).taskDone==false){
+                   /// checkBox.setChecked(false);
+                }
+
+            }
+            tmpToDoNote.completedCount=count;
+            tmpToDoNote.totalTasks=tmpToDoNote.taskList.size();
+            completedText.setText("Completed: "+tmpToDoNote.completedCount+"/"+tmpToDoNote.totalTasks);
+
+
+            if (tmpToDoNote.taskList.size()==1){removeTaskButton.setAlpha(0.5f);
+            } else {removeTaskButton.setAlpha(1f);}
+            checkBox.setTag(tmpToDoNote.taskList.get(position));
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    MySingleton mySingleton = MySingleton.getInstance(getContext());
+                    Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+                    ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+
+
+                    for (int i=0;i<tmpToDoNote.taskList.size();i++) {
+                        CheckBox checkBox = (CheckBox) v.findViewById(R.id.check_box);
+                        if (checkBox.getTag()==tmpToDoNote.taskList.get(i)) {
+
+
+                            if (tmpToDoNote.taskList.get(i).taskDone == true) {
+                                tmpToDoNote.taskList.get(i).taskDone = false;
+                                checkBox.setChecked(false);
+                                tmpToDoNote.taskList.get(i).taskDone = false;
+                            } else if (tmpToDoNote.taskList.get(i).taskDone == false){
+                                tmpToDoNote.taskList.get(i).taskDone = true;
+                                checkBox.setChecked(true);
+                            }
+                        }
+                    }
+
+                    myToDoAdapter.notifyDataSetChanged();
+
+                }
+            });
+            removeTaskButton.setTag(tmpToDoNote.taskList.get(position));
+            removeTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    MySingleton mySingleton = MySingleton.getInstance(getContext());
+                    Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+                    ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
+                    if (tmpToDoNote.taskList.size() > 1) {
+                        ImageButton removeTaskButton = (ImageButton) v.findViewById(R.id.remove_task_button);
+                        tmpToDoNote.taskList.remove(removeTaskButton.getTag());
+                        tmpToDoNote.totalTasks = tmpToDoNote.totalTasks - 1;
+                        completedText.setText("Completed: " + tmpToDoNote.completedCount + "/" + tmpToDoNote.totalTasks);
+                        myToDoAdapter.notifyDataSetChanged();
+                    }
+
+                }
+            });
+            ///Räknar och visar antal slutförda uppgifter
+
+
+            return v;               //här returnerar jag blowup.xmls root-layout
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        MySingleton mySingleton = MySingleton.getInstance(getActivity());
         Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
         ToDoNote tmpToDoNote = (ToDoNote) tmpNote;
-        for (int i = 0; i < tmpToDoNote.taskList.size(); i++) {
-            Log.i("TAG", "I tasklist taskString: "+i+tmpToDoNote.taskList.get(i).taskString);
-            Log.i("TAG", "I tasklist taskDone: "+i+tmpToDoNote.taskList.get(i).taskDone);
+        View v;
+
+        int visibleChildCount = (todoListView.getLastVisiblePosition() - todoListView.getFirstVisiblePosition()) + 1;
+
+        for (int i=0;i<visibleChildCount;i++){
+            v=todoListView.getChildAt(i);
+            int tmpPosition = todoListView.getPositionForView(v);
+
+            EditText editTaskText =(EditText)v.findViewById(R.id.edit_task_text);
+            if (editTaskText.getText().hashCode() == s.hashCode()){
+                String text=editTaskText.getText().toString();
+                tmpToDoNote.taskList.get(tmpPosition).taskString = text;
+            }
+        }
         }
     }
 
 
-}
+

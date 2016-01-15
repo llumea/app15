@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                tools:context=".MainActivity">
+    <ImageView
+        android:id="@+id/instruction_view"
+        android:src="@drawable/instructions_landscape"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+
+        android:id="@+id/my_actionbar"
+        android:paddingLeft="4dp"
+        android:layout_gravity="fill_horizontal"
+        android:layout_width="match_parent"
+        android:background="@color/primarycolor"
+        android:elevation="4dp"
+        android:layout_height="48dp">
+        <TextView
+
+            android:id="@+id/actionbar_title"
+            android:text="@string/actionbar_title"
+            android:paddingTop="4dp"
+            android:textSize="30sp"
+            android:textColor="@color/texticons"
+            android:layout_centerInParent="true"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:id="@+id/new_note_button"
+            android:src="@drawable/newnote"
+            android:background="#0000"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <ImageButton
+            android:id="@+id/new_todo_button"
+            android:src="@drawable/newtodo"
+            android:layout_toLeftOf="@id/new_note_button"
+            android:background="#0000"
+            android:gravity="right"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/container_list_view"
+        android:layout_below="@id/my_actionbar"
+        android:layout_width="match_parent"
+        android:background="@color/dividercolor"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:alpha="0.5"
+        android:layout_marginTop="16dp"
+        android:layout_height="48dp">
+
+        <TextView
+            android:id="@+id/sort_button"
+            android:layout_centerInParent="true"
+            android:text="SORT BY DATE"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:textSize="22sp"
+            android:textColor="@color/primarydarkcolor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:id="@+id/information_field"
+        android:layout_below="@id/container_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ListView
+            android:background="@color/primarycolor"
+            android:id="@+id/list_view"
+            android:divider="@color/texticons"
+            android:dividerHeight="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></ListView>
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

@@ -3,7 +3,7 @@
                 android:id="@+id/inflated_relative_layout"
                 android:layout_margin="8dp"
               android:layout_width="fill_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="match_parent">
 
     <CheckBox
         android:id="@+id/check_box"
@@ -28,6 +28,7 @@
         android:inputType="textCapSentences|textNoSuggestions"
         android:hint="ToDo"
         android:padding="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 

@@ -5,7 +5,7 @@ package com.example.umyhlarsle.allnotes;
  */
 public class Tag {
 
-    String content;     //Kan spara info här
+    String content;
 
     public Tag(){
 

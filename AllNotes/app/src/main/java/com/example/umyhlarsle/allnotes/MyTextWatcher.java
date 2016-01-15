@@ -1,9 +1,7 @@
 package com.example.umyhlarsle.allnotes;
 
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -21,13 +19,12 @@ public class MyTextWatcher implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        Log.i("TAG", "BeforeTestChanged :" + count);
+
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.i("TAG", "OnTextChanged :" + count);
-        ///((MainActivity) context).textView.setText(Integer.toString(count));
+
 
     }
 

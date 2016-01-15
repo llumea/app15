@@ -40,32 +40,37 @@ public class TextNoteFragment extends Fragment {
 
         super.onPause();
         ///Sparar innehållet, titeln sparas i SecondActivity
-        MySingleton mySingleton = MySingleton.getInstance();
-        String currentContent = editContent.getText().toString();
-        ((TextNote)mySingleton.myNoteList.get(mySingleton.listPosition)).content= currentContent;
+        MySingleton mySingleton = MySingleton.getInstance(getActivity());
+        if (mySingleton.myNoteList.size()>0) {
+            String currentContent = editContent.getText().toString();
+            ((TextNote) mySingleton.myNoteList.get(mySingleton.listPosition)).content = currentContent;
 
-        ///Sparar datum här i stället för SecondActivity, datum för todonote kanske ändras till deadline
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        long tmpTime = date.getTime();
-        ((TextNote)mySingleton.myNoteList.get(mySingleton.listPosition)).date= tmpTime;
+            ///Sparar datum här i stället för SecondActivity, datum för todonote kanske ändras till deadline
+            Calendar calendar = Calendar.getInstance();
+            Date date = calendar.getTime();
+            long tmpTime = date.getTime();
+            ((TextNote) mySingleton.myNoteList.get(mySingleton.listPosition)).date = tmpTime;
 
-        ///Testar sparade värdet
-        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-       TextNote tmpTextNote = (TextNote) tmpNote;
-        String tmpContent = tmpTextNote.content;
-        Log.i("TAG", "Ändrat värde?"+tmpContent+"listPosition: "+mySingleton.listPosition);
+            ///Testar sparade värdet
+            Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+            TextNote tmpTextNote = (TextNote) tmpNote;
+            String tmpContent = tmpTextNote.content;
+
+        }
 
     }
     @Override
     public void onResume() {
         super.onResume();
-        MySingleton mySingleton = MySingleton.getInstance();
-        Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
-        TextNote tmpTextNote = (TextNote) tmpNote;
-        String tmpContent = tmpTextNote.content;
-        editContent.setText(tmpContent);
-        Log.i("TAG", "Resume värde?"+tmpContent+"listPosition: "+mySingleton.listPosition);
+
+        MySingleton mySingleton = MySingleton.getInstance(getActivity());
+        if (mySingleton.myNoteList.size()>0) {
+            Note tmpNote = mySingleton.myNoteList.get(mySingleton.listPosition);
+            TextNote tmpTextNote = (TextNote) tmpNote;
+            String tmpContent = tmpTextNote.content;
+            editContent.setText(tmpContent);
+
+        }
 
 
     }
